@@ -5,7 +5,6 @@
 **Throughput–Latency efficiency frontier benchmark: Friendli Engine vs vLLM**
 
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue?style=flat-square)
-![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
 ![Concurrency](https://img.shields.io/badge/concurrency-1--32-orange?style=flat-square)
 
 <img src="results/benchmark_result.png" width="720"/>
