@@ -1,0 +1,102 @@
+{
+  "vllm": [
+    {
+      "concurrency": 1,
+      "throughput_tps": 55.90405496023468,
+      "p50_ttft_ms": 114.8,
+      "p95_ttft_ms": 139.48657889391725,
+      "p99_ttft_ms": 170.79999999999998,
+      "success_rate": 1.0
+    },
+    {
+      "concurrency": 2,
+      "throughput_tps": 112.36674627141512,
+      "p50_ttft_ms": 254.2,
+      "p95_ttft_ms": 313.6710453405042,
+      "p99_ttft_ms": 378.2,
+      "success_rate": 1.0
+    },
+    {
+      "concurrency": 4,
+      "throughput_tps": 180.4953685615529,
+      "p50_ttft_ms": 590.4,
+      "p95_ttft_ms": 740.5468855907078,
+      "p99_ttft_ms": 878.4,
+      "success_rate": 1.0
+    },
+    {
+      "concurrency": 8,
+      "throughput_tps": 233.60372788746687,
+      "p50_ttft_ms": 1517.0,
+      "p95_ttft_ms": 1881.7531378857418,
+      "p99_ttft_ms": 2257.0,
+      "success_rate": 1.0
+    },
+    {
+      "concurrency": 16,
+      "throughput_tps": 239.5332704003305,
+      "p50_ttft_ms": 3772.0,
+      "p95_ttft_ms": 4586.306518859176,
+      "p99_ttft_ms": 5612.0,
+      "success_rate": 1.0
+    },
+    {
+      "concurrency": 32,
+      "throughput_tps": 250.0464661263966,
+      "p50_ttft_ms": 7544.0,
+      "p95_ttft_ms": 9435.574273844428,
+      "p99_ttft_ms": 11224.0,
+      "success_rate": 1.0
+    }
+  ],
+  "friendli": [
+    {
+      "concurrency": 1,
+      "throughput_tps": 80.6905525763872,
+      "p50_ttft_ms": 73.8,
+      "p95_ttft_ms": 91.74291271166248,
+      "p99_ttft_ms": 109.8,
+      "success_rate": 1.0
+    },
+    {
+      "concurrency": 2,
+      "throughput_tps": 229.21911594381717,
+      "p50_ttft_ms": 127.1,
+      "p95_ttft_ms": 152.4633201125984,
+      "p99_ttft_ms": 189.1,
+      "success_rate": 1.0
+    },
+    {
+      "concurrency": 4,
+      "throughput_tps": 491.6047927382656,
+      "p50_ttft_ms": 196.79999999999998,
+      "p95_ttft_ms": 233.71896848790013,
+      "p99_ttft_ms": 292.8,
+      "success_rate": 1.0
+    },
+    {
+      "concurrency": 8,
+      "throughput_tps": 887.1023471780128,
+      "p50_ttft_ms": 319.79999999999995,
+      "p95_ttft_ms": 393.08094693945634,
+      "p99_ttft_ms": 475.8,
+      "success_rate": 1.0
+    },
+    {
+      "concurrency": 16,
+      "throughput_tps": 1167.8080540658907,
+      "p50_ttft_ms": 475.59999999999997,
+      "p95_ttft_ms": 574.9375036909195,
+      "p99_ttft_ms": 707.6,
+      "success_rate": 1.0
+    },
+    {
+      "concurrency": 32,
+      "throughput_tps": 1418.973796419898,
+      "p50_ttft_ms": 672.4,
+      "p95_ttft_ms": 839.3415591690521,
+      "p99_ttft_ms": 1000.4,
+      "success_rate": 1.0
+    }
+  ]
+}
