@@ -99,4 +99,4 @@ The efficiency frontier plot (Throughput on X, P95 TTFT on Y, one point per conc
 | Moving down | Lower latency |
 | **Lower-right curve** | **Strictly better** — more throughput *and* lower latency |
 
-The gap between the two curves widens at higher concurrency levels, showing that Friendli Engine's advantage grows under production load — not an idle-state artifact. Both engines look similar at `c=1`, but Friendli's throughput scales ~5× higher while its TTFT grows far more slowly than vLLM's.
+The gap between the two curves widens at higher concurrency levels, showing that Friendli Engine's advantage grows under production load — not an idle-state artifact. Both engines look similar at `c=1`, but as concurrency increases vLLM's latency climbs nearly vertically while Friendli maintains a near-linear slope — reaching ~5× higher throughput at a fraction of the latency cost.

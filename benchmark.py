@@ -254,7 +254,9 @@ def plot_frontier(
     output_path: str,
     is_mock: bool = False,
 ) -> None:
-    fig, ax = plt.subplots(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=(11, 6.5))
+    fig.patch.set_facecolor("white")
+    ax.set_facecolor("white")
 
     vx = [m.throughput_tps for m in vllm]
     vy = [m.p95_ttft_ms for m in vllm]
@@ -264,18 +266,24 @@ def plot_frontier(
     ax.plot(vx, vy, "o-", color="#E55353", linewidth=2.2, markersize=9, label="vLLM", zorder=3)
     ax.plot(fx, fy, "s-", color="#2563EB", linewidth=2.2, markersize=9, label="Friendli Engine", zorder=3)
 
-    for m in vllm:
+    # Per-point offsets to avoid label overlap
+    # vLLM c=1,2 go upper-left; rest go right
+    vllm_offsets = [(-36, 8), (-36, 5), (8, 5), (8, 5), (8, 5), (8, -13)]
+    # Friendli c=1,2 go below to clear the vLLM labels; c=32 goes above-left (right edge)
+    friendli_offsets = [(8, -14), (4, -14), (8, 5), (8, 5), (8, 5), (-36, 8)]
+
+    for m, off in zip(vllm, vllm_offsets):
         ax.annotate(
             f"c={m.concurrency}",
             (m.throughput_tps, m.p95_ttft_ms),
-            textcoords="offset points", xytext=(7, 4),
+            textcoords="offset points", xytext=off,
             fontsize=8, color="#C0392B",
         )
-    for m in friendli:
+    for m, off in zip(friendli, friendli_offsets):
         ax.annotate(
             f"c={m.concurrency}",
             (m.throughput_tps, m.p95_ttft_ms),
-            textcoords="offset points", xytext=(7, 4),
+            textcoords="offset points", xytext=off,
             fontsize=8, color="#1D4ED8",
         )
 
@@ -283,23 +291,23 @@ def plot_frontier(
     ax.set_title(
         f"Inference Efficiency Frontier: Friendli Engine vs vLLM{title_suffix}\n"
         "Each point = one concurrency level (c).  Lower-right corner = better.",
-        fontsize=13,
+        fontsize=13, pad=12,
     )
     ax.set_xlabel("Throughput  (output tokens / second)", fontsize=12)
     ax.set_ylabel("P95 Time-to-First-Token  (ms)", fontsize=12)
-    ax.legend(fontsize=12, loc="upper left")
+    ax.legend(fontsize=12, loc="upper left", framealpha=0.9, edgecolor="#dddddd")
     all_y = vy + fy
     ax.set_ylim(0, max(all_y) * 1.1)
-    ax.grid(True, alpha=0.25, linestyle="--", which="major")
+    ax.grid(True, alpha=0.2, linestyle="--", which="major", color="#aaaaaa")
     ax.xaxis.set_major_formatter(ticker.FuncFormatter(lambda x, _: f"{x:,.0f}"))
     ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda y, _: f"{y:,.0f}"))
 
-    ax.text(
-        0.98, 0.04,
-        "higher throughput  →\n↓  lower latency",
-        transform=ax.transAxes, ha="right", va="bottom",
-        fontsize=9, color="gray", style="italic",
-    )
+    # Clean spines
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.spines["left"].set_color("#cccccc")
+    ax.spines["bottom"].set_color("#cccccc")
+    ax.tick_params(colors="#555555")
 
     fig.tight_layout()
     Path(output_path).parent.mkdir(parents=True, exist_ok=True)
