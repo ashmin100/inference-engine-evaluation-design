@@ -288,10 +288,9 @@ def plot_frontier(
     ax.set_xlabel("Throughput  (output tokens / second)", fontsize=12)
     ax.set_ylabel("P95 Time-to-First-Token  (ms)", fontsize=12)
     ax.legend(fontsize=12, loc="upper left")
-    ax.set_yscale("log")
     all_y = vy + fy
-    ax.set_ylim(min(all_y) * 0.7, max(all_y) * 1.5)
-    ax.grid(True, alpha=0.25, linestyle="--", which="both")
+    ax.set_ylim(0, max(all_y) * 1.1)
+    ax.grid(True, alpha=0.25, linestyle="--", which="major")
     ax.xaxis.set_major_formatter(ticker.FuncFormatter(lambda x, _: f"{x:,.0f}"))
     ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda y, _: f"{y:,.0f}"))
 
