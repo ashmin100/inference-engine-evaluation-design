@@ -1,25 +1,45 @@
-# Inference Benchmark: Friendli Engine vs vLLM
+<div align="center">
 
-Benchmarks the **Throughput–Latency efficiency frontier** of Friendli Engine against vLLM across concurrency levels 1 → 32.
+# Inference Engine Evaluation
+
+**Throughput–Latency efficiency frontier benchmark: Friendli Engine vs vLLM**
+
+![Python](https://img.shields.io/badge/python-3.10%2B-blue?style=flat-square)
+![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
+![Concurrency](https://img.shields.io/badge/concurrency-1--32-orange?style=flat-square)
+
+<img src="results/benchmark_result.png" width="720"/>
+
+*Mock output — data approximated from published FriendliAI benchmarks
+([comparing-friendli-engine-vllm](https://friendli.ai/blog/comparing-friendli-engine-vllm),
+[quantized-mixtral-single-gpu](https://friendli.ai/blog/quantized-mixtral-single-gpu))*
+
+</div>
+
+---
 
 ## Quick Start
 
 ```bash
 pip install -r requirements.txt
+```
 
-# Preview expected results (no engines needed)
+```bash
+# Preview expected results (no live engines needed)
 python benchmark.py --mock
 
-# Real benchmark (both engines must be serving on the OpenAI-compatible API)
+# Real benchmark
 python benchmark.py \
   --vllm-url     http://localhost:8000 \
   --friendli-url http://localhost:8001 \
   --model        meta-llama/Llama-3.1-8B-Instruct
 ```
 
-Output: `results/benchmark_result.png` + `results/raw_metrics.json`
+**Output:** `results/benchmark_result.png` + `results/raw_metrics.json`
 
-## All Options
+---
+
+## Options
 
 | Flag | Default | Description |
 |------|---------|-------------|
@@ -30,20 +50,24 @@ Output: `results/benchmark_result.png` + `results/raw_metrics.json`
 | `--output` | `results/benchmark_result.png` | Graph output path |
 | `--mock` | off | Generate graph from simulated data |
 
+---
+
 ## Requirements
 
-- Both engines must expose an **OpenAI-compatible** `/v1/chat/completions` endpoint.
-- `stream: true` must be supported — TTFT measurement depends on it.
-- Same model must be loaded in both engines for a fair comparison.
+- Both engines must expose an **OpenAI-compatible** `/v1/chat/completions` endpoint
+- `stream: true` must be supported — TTFT measurement depends on it
+- Same model must be loaded in both engines for a fair comparison
 
-## What the Script Measures
+---
+
+## What It Measures
 
 For each concurrency level in `[1, 2, 4, 8, 16, 32]`:
 
-1. Sends `WARMUP_REQUESTS` (5) to eliminate cold-start latency.
-2. Sends 50 concurrent requests (same prompts to both engines).
-3. Records **TTFT** (via streaming) and **output token count** per request.
-4. Computes **P95 TTFT** and **Throughput** (total output tokens / wall-clock seconds).
+1. Sends 5 warmup requests to eliminate cold-start latency
+2. Sends 50 concurrent requests across varied prompts
+3. Records **TTFT** per request via streaming SSE
+4. Computes **P95 TTFT** and **Throughput** (total output tokens / wall-clock seconds)
 
 ---
 
@@ -51,7 +75,7 @@ For each concurrency level in `[1, 2, 4, 8, 16, 32]`:
 
 ### Time-to-First-Token (P95 TTFT)
 
-TTFT is the delay between a user submitting a request and receiving the first token. It is the latency signal most directly perceived by end users in interactive applications (chat, copilots, search). P95 captures the tail experience that determines whether a product "feels" responsive at scale, not just on average.
+TTFT is the delay between a user submitting a request and receiving the first token — the latency signal most directly perceived by end users in interactive applications (chat, copilots, search). P95 captures the tail experience that determines whether a product *feels* responsive at scale, not just on average.
 
 TTFT degrades sharply under concurrent load because engines must queue and batch requests. The degree of degradation is the clearest signal of scheduling and batching efficiency — where Friendli Engine's continuous batching and memory management optimizations are most visible.
 
@@ -65,23 +89,15 @@ Measuring throughput alone misses latency; measuring TTFT alone misses capacity.
 
 ## Why the Throughput–Latency Frontier?
 
-The efficiency frontier plot (Throughput on X, P95 TTFT on Y, one point per concurrency level) is the industry-standard visualization for comparing inference systems. It is used in vLLM's own published benchmarks and Anyscale's serving comparisons because it simultaneously communicates two dimensions of performance in a single curve.
+The efficiency frontier plot (Throughput on X, P95 TTFT on Y, one point per concurrency level) is the industry-standard visualization for comparing inference systems — used in vLLM's own published benchmarks and Anyscale's serving comparisons.
 
 **How to read the graph:**
 
-- Each point represents one concurrency level (labeled `c=N`).
-- As concurrency increases, throughput rises but latency also rises — the curve reveals each engine's efficiency envelope under growing load.
-- A curve that sits **lower-right** is strictly better: higher throughput *and* lower latency at the same concurrency.
-- The **gap between the two curves**, which widens at higher concurrency levels, shows that Friendli Engine's advantage is not an idle-state artifact — it grows as production load increases.
+| | Meaning |
+|---|---|
+| Each point | One concurrency level `c=N` |
+| Moving right | Higher throughput |
+| Moving down | Lower latency |
+| **Lower-right curve** | **Strictly better** — more throughput *and* lower latency |
 
-This asymmetric widening is the key insight: both engines look similar at c=1, but Friendli's throughput scales ~5× higher while its TTFT grows far more slowly than vLLM's. A single sub-graph captures this story completely.
-
----
-
-## Sample Output
-
-![Efficiency Frontier](results/benchmark_result.png)
-
-*Generated with `--mock` using data approximated from published FriendliAI benchmarks
-([friendli.ai/blog/comparing-friendli-engine-vllm](https://friendli.ai/blog/comparing-friendli-engine-vllm),
-[friendli.ai/blog/quantized-mixtral-single-gpu](https://friendli.ai/blog/quantized-mixtral-single-gpu)).*
+The gap between the two curves widens at higher concurrency levels, showing that Friendli Engine's advantage grows under production load — not an idle-state artifact. Both engines look similar at `c=1`, but Friendli's throughput scales ~5× higher while its TTFT grows far more slowly than vLLM's.
